@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le vrai ou l'imposteur ? – Activité usurpation d'identité</title>
+  <meta name="description" content="Activité pédagogique : démasquer un faux compte qui utilise la photo de quelqu'un d'autre, puis retrouver le vrai.">
+
+  <!-- Le style est dans graph.css, le fonctionnement (et les photos) dans build.js -->
+  <link rel="stylesheet" href="graph.css">
+  <script src="build.js" defer></script>
+</head>
+<body>
+
+  <!-- =========================================================
+       EN-TÊTE : titre + bouton texte + circuit de progression
+       ========================================================= -->
+  <header class="entete">
+    <div class="entete-haut">
+      <h1 class="titre-site">Le vrai ou l'imposteur ?</h1>
+      <button type="button" class="bouton-texte" id="bouton-texte" aria-pressed="false">Agrandir le texte</button>
+    </div>
+
+    <ol class="circuit" id="circuit" aria-label="Progression de l'enquête">
+      <li data-etape="message"><span class="tuile-nom">Message</span><span class="tuile-case" aria-hidden="true"></span><span class="sr-only tuile-etat">à venir</span></li>
+      <li data-etape="imposteur"><span class="tuile-nom">Imposteur</span><span class="tuile-case" aria-hidden="true"></span><span class="sr-only tuile-etat">à venir</span></li>
+      <li data-etape="recherche"><span class="tuile-nom">Recherche</span><span class="tuile-case" aria-hidden="true"></span><span class="sr-only tuile-etat">à venir</span></li>
+      <li data-etape="bilan"><span class="tuile-nom">Prénom</span><span class="tuile-case" aria-hidden="true"></span><span class="sr-only tuile-etat">à venir</span></li>
+    </ol>
+  </header>
+
+  <main>
+
+    <!-- =========================================================
+         ÉCRAN 0 : INTRODUCTION
+         ========================================================= -->
+    <section id="intro" class="ecran" aria-labelledby="intro-titre">
+      <h2 id="intro-titre" class="accroche" tabindex="-1">
+        <b>Un imposteur</b> utilise la photo d'un garçon pour piéger ses amis. <b>Démasquez-le</b>, puis <b>retrouvez le vrai compte</b>.
+      </h2>
+
+      <div class="panneau">
+        <p>Dans les fragments de rêve, vous avez vu <strong>le visage de ce garçon</strong> et <strong>sa guitare</strong>.
+          <br> Gardez-les en tête, ils vous aideront peut-être à reconnaître le vrai.</p>
+        <div class="note note-info">
+          <span class="note-icone" aria-hidden="true">i</span>
+          <p>C'est une simulation, tous les comptes et les personnes sont inventés.</p>
+        </div>
+      </div>
+
+      <button type="button" class="bouton bouton-principal bouton-large" data-aller="message">Ouvrir la messagerie</button>
+    </section>
+
+    <!-- =========================================================
+         ÉCRAN 1 : LE MESSAGE PIÈGE
+         ========================================================= -->
+    <section id="message" class="ecran" hidden aria-labelledby="message-titre">
+      <h2 id="message-titre" tabindex="-1">Étape 1 : un message inattendu</h2>
+
+      <div class="panneau">
+        <p>Un nouveau message vient d'arriver. <strong>Vous reconnaissez la photo ?</strong> C'est le garçon des fragments de rêve.</p>
+
+        <div class="conversation" aria-label="Conversation sur un réseau social (simulation)">
+          <div class="conversation-entete">
+            <img class="reseau-avatar petit-avatar" data-image="avatar" alt="Photo de profil : le garçon des fragments de rêve">
+            <p><strong class="nom-faux"></strong><br><span class="conversation-pseudo">@<span class="pseudo-faux"></span></span></p>
+          </div>
+          <p class="bulle-message">Salut ! C'est moi, j'ai dû recréer un compte, l'ancien a été piraté.</p>
+          <p class="bulle-message">Je viens de t'envoyer un code par SMS par erreur. Tu peux me le renvoyer ? C'est urgent !</p>
+        </div>
+      </div>
+
+      <div class="panneau">
+        <h3>Que faites-vous ?</h3>
+        <div class="choix-liste">
+          <button type="button" class="choix" data-choix="envoyer">Nous lui envoyons le code</button>
+          <button type="button" class="choix" data-choix="demander">Nous lui demandons qui il est vraiment</button>
+          <button type="button" class="choix" data-choix="profil">Nous allons d'abord voir son profil</button>
+        </div>
+        <div class="retour" id="message-retour" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ÉCRAN 2 : DÉMASQUER L'IMPOSTEUR (chasse aux indices)
+         ========================================================= -->
+    <section id="imposteur" class="ecran" hidden aria-labelledby="imposteur-titre">
+      <h2 id="imposteur-titre" tabindex="-1">Étape 2 : démasquer l'imposteur</h2>
+
+      <div class="panneau consigne">
+        <p><strong>Chasse aux indices !</strong> Ce profil utilise la photo du garçon des fragments de rêve. Cliquez sur tout ce qui vous semble louche : <strong>6 indices</strong> sont cachés… et quelques fausses pistes aussi.</p>
+      </div>
+
+      <!-- Détecteur de faux compte (reste visible en haut de l'écran) -->
+      <div class="detecteur" id="detecteur">
+        <p class="detecteur-titre">Détecteur de faux compte : <span id="detecteur-texte">0 indice sur 6</span></p>
+        <div class="detecteur-barre" id="detecteur-barre" aria-hidden="true"></div>
+      </div>
+
+      <!-- Profil complet de l'imposteur -->
+      <article class="reseau profil-complet" aria-label="Profil de l'expéditeur du message (simulation)">
+        <div class="banniere" aria-hidden="true"></div>
+        <div class="profil-haut">
+          <img class="reseau-avatar grand-avatar" data-image="avatar" alt="Photo de profil : le garçon des fragments de rêve">
+          <div class="profil-identite">
+            <p class="reseau-pseudo">@<span class="pseudo-faux"></span></p>
+            <p><button type="button" class="cliquable" data-indice="nom" aria-pressed="false"><span class="nom-faux"></span></button></p>
+          </div>
+        </div>
+
+        <p class="profil-infos">
+          <button type="button" class="cliquable" data-indice="date" aria-pressed="false">Compte créé il y a 2 jours</button>
+          <button type="button" class="cliquable" data-piste="ville" aria-pressed="false">Paris</button>
+        </p>
+
+        <p class="profil-stats">
+          <span><strong>2</strong> publications</span>
+          <button type="button" class="cliquable" data-indice="ratio" aria-pressed="false"><strong>3</strong> abonnés · <strong>850</strong> abonnements</button>
+        </p>
+
+        <p class="reseau-bio">
+          <button type="button" class="cliquable" data-piste="musique" aria-pressed="false">Musique et guitare</button>
+          <button type="button" class="cliquable" data-indice="excuse" aria-pressed="false">Mon ancien compte a été piraté, ajoutez-moi ici !</button>
+        </p>
+
+        <ul class="stories" aria-label="Stories à la une">
+          <li><button type="button" class="story cliquable-rond" data-piste="stories" aria-pressed="false"><span class="story-rond" aria-hidden="true">♪</span><span>Concerts</span></button></li>
+          <li><button type="button" class="story cliquable-rond" data-piste="stories" aria-pressed="false"><span class="story-rond" aria-hidden="true">★</span><span>Studio</span></button></li>
+          <li><button type="button" class="story cliquable-rond" data-piste="stories" aria-pressed="false"><span class="story-rond" aria-hidden="true">☺</span><span>Potes</span></button></li>
+        </ul>
+
+        <p class="onglet-publications">Publications</p>
+
+        <!-- Publication 1 : la photo volée -->
+        <div class="publication">
+          <button type="button" class="cliquable-image" data-indice="photo" aria-pressed="false">
+            <img class="publication-photo" data-image="chambre" alt="Le garçon assis dans sa chambre avec sa guitare, devant un mur de briques et des affiches de rock.">
+            <span class="sr-only">Cette photo</span>
+          </button>
+          <p class="publication-texte"><strong class="pseudo-faux"></strong> Moi dans ma chambre. Nouveau compte, abonnez-vous !</p>
+          <p class="publication-date">il y a 3 heures ·
+            <button type="button" class="cliquable" data-piste="likes" aria-pressed="false">12 j'aime</button>
+          </p>
+        </div>
+
+        <!-- Publication 2 : le faux concours -->
+        <div class="publication">
+          <button type="button" class="cliquable-image" data-indice="concours" aria-pressed="false">
+            <span class="carte-concours">
+              <span class="carte-concours-titre">CONCOURS</span>
+              <span class="carte-concours-texte">Gagnez une guitare !</span>
+            </span>
+            <span class="sr-only">Le concours</span>
+          </button>
+          <p class="publication-texte"><strong class="pseudo-faux"></strong> Pour participer, envoyez-moi en message le code à 6 chiffres que vous allez recevoir par SMS. Vite, fin ce soir !</p>
+          <p class="publication-date">hier · 3 j'aime</p>
+          <ul class="commentaires" aria-label="Commentaires">
+            <li><strong>lena_b</strong> C'est vraiment toi ? T'as changé de nom ?</li>
+            <li><strong class="pseudo-faux"></strong> oui oui c moi, envoie vite le code</li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="panneau carnet">
+        <h3>Indices relevés</h3>
+        <ul class="carnet-liste carnet-colonne" id="carnet-liste"></ul>
+        <div class="retour" id="imposteur-retour" role="status" aria-live="polite"></div>
+        <button type="button" class="bouton bouton-principal" id="signaler" hidden>Signaler ce faux compte</button>
+      </div>
+
+      <!-- Choix du motif de signalement -->
+      <div class="panneau" id="motif" hidden>
+        <h3 tabindex="-1">Pourquoi signalez-vous ce compte ?</h3>
+        <div class="choix-liste">
+          <button type="button" class="choix" data-motif="concours">Il organise un concours</button>
+          <button type="button" class="choix" data-motif="usurpation">Il se fait passer pour quelqu'un d'autre</button>
+          <button type="button" class="choix" data-motif="gout">Nous n'aimons pas sa musique</button>
+        </div>
+        <div class="retour" id="motif-retour" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="panneau resultat resultat-ok" id="signale-ok" hidden>
+        <h3 tabindex="-1"><span aria-hidden="true">✓ </span>Faux compte signalé : usurpation d'identité</h3>
+        <p>Bien joué ! Il a volé la photo du garçon pour piéger ses amis. Maintenant, <strong>retrouvez son vrai compte</strong>.</p>
+        <button type="button" class="bouton bouton-principal" data-aller="recherche">Rechercher son vrai compte</button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ÉCRAN 3 : RETROUVER LE VRAI COMPTE
+         ========================================================= -->
+    <section id="recherche" class="ecran" hidden aria-labelledby="recherche-titre">
+      <h2 id="recherche-titre" tabindex="-1">Étape 3 : retrouver le vrai compte</h2>
+
+      <div class="panneau consigne">
+        <p><strong>Ouvrez les profils et trouvez celui du garçon.</strong> Vous pouvez modifier la recherche.</p>
+      </div>
+
+      <!-- Liste des résultats -->
+      <div id="vue-resultats">
+        <form class="barre-recherche" id="form-recherche" role="search">
+          <label for="champ-recherche" class="sr-only">Rechercher un compte</label>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="2.6"/><line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+          <input type="search" id="champ-recherche" value="guitare" autocomplete="off" autocapitalize="none" spellcheck="false">
+        </form>
+        <p class="compte-resultats" id="compte-resultats" role="status" aria-live="polite"></p>
+        <ul class="resultats" id="resultats" aria-label="Comptes trouvés"></ul>
+      </div>
+
+      <!-- Profil ouvert -->
+      <div id="vue-profil" hidden>
+        <button type="button" class="bouton bouton-secondaire bouton-retour" id="retour-resultats">← Retour aux résultats</button>
+        <article class="reseau profil-complet" id="profil-ouvert" aria-labelledby="profil-ouvert-titre"></article>
+        <div class="panneau verdict">
+          <button type="button" class="bouton bouton-principal" id="c-est-lui">C'est son vrai compte !</button>
+          <div class="retour" id="recherche-retour" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="panneau resultat resultat-ok" id="trouve-ok" hidden>
+        <h3 tabindex="-1"><span aria-hidden="true">✓ </span>C'est lui : @<span class="pseudo-vrai"></span></h3>
+        <p>Même visage, même guitare gravée, un compte actif depuis longtemps… Et il prévient lui-même ses amis qu'un faux compte circule.</p>
+        <button type="button" class="bouton bouton-principal" data-aller="bilan">Découvrir le début de son prénom</button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ÉCRAN 4 : BILAN + DÉBUT DU PRÉNOM
+         ========================================================= -->
+    <section id="bilan" class="ecran" hidden aria-labelledby="bilan-titre">
+      <h2 id="bilan-titre" tabindex="-1">Enquête terminée : ce qu'il faut retenir</h2>
+
+      <div class="bloc-code">
+        <p class="bloc-code-texte">Son pseudo vous a donné <strong>le début de son prénom</strong>. Les dernières lettres se cachent dans un autre fragment de rêve.</p>
+        <div class="pastille-code">
+          <span class="pastille-code-titre">Prénom</span>
+          <span class="bulles" id="bulles" aria-hidden="true"></span>
+          <span class="sr-only" id="prenom-lu"></span>
+        </div>
+      </div>
+
+      <ul class="lecons">
+        <li class="panneau"><strong>Une photo ne prouve rien.</strong> N'importe qui peut copier la photo de quelqu'un pour créer un faux compte.</li>
+        <li class="panneau"><strong>Un faux compte se trahit.</strong> Créé récemment, peu d'abonnés mais des centaines d'abonnements, une excuse toute prête, des photos volées, un concours trop beau...</li>
+        <li class="panneau"><strong>Un code reçu par SMS ne se partage jamais</strong>, même avec un ami.</li>
+      </ul>
+
+      <div class="panneau">
+        <h3>Les bons réflexes</h3>
+        <ul class="reflexes">
+          <li>En cas de doute, <strong>vérifiez par un autre moyen</strong> sans donner accès à vos données.</li>
+          <li><strong>Signalez le faux compte</strong> au réseau social, en choisissant « usurpation d'identité ».</li>
+          <li><strong>Prévenez vos amis</strong>, comme l'a fait le vrai propriétaire du compte.</li>
+          <li>Usurper l'identité de quelqu'un est un délit les risques encourus vont jusqu'à <strong>1 an de prison et 15 000 € d'amende</strong> (article 226-4-1 du Code pénal).</li>
+          <li>Victime ou témoin ? Le <strong>3018</strong> est le numéro national, gratuit et confidentiel, pour les jeunes victimes de violences numériques, y compris l'usurpation d'identité.</li>
+        </ul>
+      </div>
+
+      <button type="button" class="bouton bouton-secondaire" id="recommencer">Recommencer l'activité</button>
+    </section>
+
+  </main>
+
+  <footer class="pied">
+    <p>Simulation pédagogique, les comptes et les personnes ont été générés par IA.</p>
+    <div class="sol-pixels" aria-hidden="true"></div>
+  </footer>
+
+</body>
+</html>

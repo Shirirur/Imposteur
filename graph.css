@@ -1,0 +1,772 @@
+/* ==========================================================
+   LE VRAI OU L'IMPOSTEUR ? – feuille de style (graph.css, reliée à text.html)
+   Thème inspiré de la carte « ordre de A à Z » :
+   fond bleu pixelisé, tuiles blanches reliées, pastille cyan.
+   ========================================================== */
+
+/* ---------- 1. Couleurs et réglages communs ---------- */
+:root {
+  --bleu: #325ba6;          /* fond principal (repris du PDF)            */
+  --bleu-clair: #3a68b1;    /* pixels discrets du fond                   */
+  --cyan: #40bfef;          /* accent : pastille Code, boutons, pixels   */
+  --cyan-fonce: #2aa6d8;    /* survol des boutons cyan                   */
+  --cyan-pale: #e3f5fd;     /* fond des notes d'information              */
+  --blanc: #ffffff;
+  --nuit: #0e2554;          /* texte sur fond blanc ou cyan              */
+  --nuit-doux: #3b4a6b;     /* petits textes sur fond blanc              */
+  --rouge: #b3261e;
+  --rouge-pale: #fdeceb;
+  --vert: #17663a;
+  --vert-pale: #e3f4e8;
+  --brun: #8a4500;          /* compte bloqué                             */
+
+  --rayon-panneau: 28px;
+  --rayon-case: 14px;
+
+  --police: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --police-code: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+}
+
+/* ---------- 2. Base ---------- */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { font-size: 100%; }
+html.grand-texte { font-size: 125%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bleu);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Crect x='80' y='120' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='280' y='160' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='320' y='280' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='200' y='0' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='200' y='80' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='120' y='360' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='80' y='40' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='240' y='160' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='160' y='280' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='120' y='200' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='440' y='160' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='160' y='120' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='40' y='160' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='320' y='0' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='280' y='400' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='280' y='240' width='40' height='40' fill='%233a68b1'/%3E%3Crect x='280' y='80' width='40' height='40' fill='%232d539d'/%3E%3Crect x='160' y='40' width='40' height='40' fill='%232d539d'/%3E%3Crect x='200' y='240' width='40' height='40' fill='%232d539d'/%3E%3Crect x='400' y='400' width='40' height='40' fill='%232d539d'/%3E%3Crect x='0' y='40' width='40' height='40' fill='%232d539d'/%3E%3Crect x='440' y='440' width='40' height='40' fill='%232d539d'/%3E%3C/svg%3E");
+  background-size: 480px 480px;
+  color: var(--blanc);
+  font-family: var(--police);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  /* évite que « x » entre deux chiffres s'affiche comme un signe × */
+  font-feature-settings: "calt" 0, "liga" 0;
+  font-variant-ligatures: none;
+}
+
+main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+h1, h2, h3 { line-height: 1.2; margin: 0; }
+p { margin: 0 0 1rem; }
+code, .mdp { font-family: var(--police-code); font-size: 1em; }
+
+/* Les titres reçoivent le focus à chaque changement d'écran (lecteurs d'écran) */
+h2:focus, h3:focus { outline: none; }
+
+/* Anneau de focus visible sur fond bleu comme sur fond blanc */
+:focus-visible {
+  outline: 3px solid var(--nuit);
+  outline-offset: 0;
+  box-shadow: 0 0 0 6px var(--blanc);
+}
+h2:focus-visible, h3:focus-visible { border-radius: 6px; }
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 3. En-tête et circuit de progression ---------- */
+.entete {
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+.entete-haut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.titre-site { font-size: 1.3rem; font-weight: 800; }
+
+.bouton-texte {
+  min-height: 44px;
+  padding: .3rem 1rem;
+  border: 2px solid var(--blanc);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.bouton-texte[aria-pressed="true"] { background: var(--blanc); color: var(--nuit); }
+
+/* Tuiles blanches reliées par un trait blanc, comme sur la carte */
+.circuit {
+  position: relative;
+  display: flex;
+  gap: .6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.circuit::before {
+  content: "";
+  position: absolute;
+  left: 1rem; right: 1rem; top: 50%;
+  height: 6px;
+  margin-top: -3px;
+  background: var(--blanc);
+}
+.circuit li {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: .45rem .35rem .5rem;
+  border-radius: 16px;
+  background: var(--blanc);
+  color: var(--nuit);
+  text-align: center;
+}
+.tuile-nom {
+  display: block;
+  font-weight: 800;
+  font-size: .95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tuile-case {
+  display: grid;
+  place-items: center;
+  height: 1.7rem;
+  margin-top: .3rem;
+  border-radius: 10px;
+  background: var(--bleu);
+  color: var(--blanc);
+  font-weight: 800;
+}
+.circuit li.en-cours .tuile-case { background: var(--cyan); }
+.circuit li.fait .tuile-case::after { content: "✓"; }
+
+/* ---------- 4. Titres d'écran et panneaux ---------- */
+.ecran > h2 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin: 0 0 1rem;
+}
+
+/* L'accroche mélange graisse normale et extra-grasse, comme le PDF */
+.accroche.accroche {
+  font-size: clamp(1.6rem, 5.5vw, 2.3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+.accroche b { font-weight: 800; }
+
+.panneau {
+  background: var(--blanc);
+  color: var(--nuit);
+  border-radius: var(--rayon-panneau);
+  padding: 1.25rem 1.4rem;
+  margin: 0 0 1rem;
+}
+.panneau > :last-child { margin-bottom: 0; }
+.panneau h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: .6rem; }
+
+.petit { font-size: 1rem; color: var(--nuit-doux); margin: .6rem 0 0; }
+
+/* Profil : une lettre dans un « pixel » bleu */
+.profil { display: flex; align-items: center; gap: .9rem; margin-bottom: .8rem; }
+.profil p { margin: 0; }
+.profil-lettre {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 3.2rem; height: 3.2rem;
+  border-radius: 12px;
+  background: var(--bleu);
+  color: var(--blanc);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* Cases bleues : chaque mot de passe est rangé dans une « case » comme sur la carte */
+.cases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  list-style: none;
+  margin: .5rem 0 0;
+  padding: 0;
+}
+.cases li {
+  padding: .2rem .75rem;
+  border-radius: 12px;
+  background: var(--bleu);
+  color: var(--blanc);
+  font-family: var(--police-code);
+}
+.cases-ratees li {
+  background: var(--rouge-pale);
+  color: var(--rouge);
+  border: 2px solid var(--rouge);
+}
+
+.calcul {
+  padding: .6rem .9rem;
+  border-radius: var(--rayon-case);
+  background: var(--bleu);
+  color: var(--blanc);
+  font-family: var(--police-code);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 5. Formulaire ---------- */
+label { display: block; font-weight: 800; margin-bottom: .45rem; }
+
+.ligne-saisie { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+.saisie {
+  flex: 1 1 12rem;
+  min-height: 54px;
+  padding: .5rem .9rem;
+  border: 3px solid var(--bleu);
+  border-radius: var(--rayon-case);
+  background: var(--bleu);
+  color: var(--blanc);
+  caret-color: var(--cyan);
+  font-family: var(--police-code);
+  font-size: 1.3rem;
+}
+.saisie:disabled { background: #e3eaf6; border-color: #c9d3e6; color: var(--nuit-doux); }
+
+/* ---------- 6. Boutons ---------- */
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: .6rem 1.5rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
+.bouton:disabled { opacity: .5; cursor: not-allowed; }
+
+.bouton-principal {
+  border: 3px solid var(--cyan);
+  background: var(--cyan);
+  color: var(--nuit);
+}
+.bouton-principal:hover:not(:disabled) { background: var(--cyan-fonce); border-color: var(--cyan-fonce); }
+
+.bouton-secondaire {
+  border: 3px solid var(--nuit);
+  background: var(--blanc);
+  color: var(--nuit);
+}
+.bouton-secondaire:hover:not(:disabled) { background: var(--cyan-pale); }
+
+.bouton-large { width: 100%; font-size: 1.2rem; }
+.ecran > .bouton-large { margin-top: .5rem; }
+
+.abandon { margin: 1rem 0 0; }
+#rohan-bouton-indice { margin-top: .2rem; }
+
+/* ---------- 7. Messages (retours) ---------- */
+.retour { margin-top: 1rem; }
+.retour:empty { display: none; }
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  padding: .8rem 1rem;
+  border-radius: 16px;
+}
+.note p { margin: 0; }
+.note-icone {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.7rem; height: 1.7rem;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+}
+.note-info { background: var(--cyan-pale); color: var(--nuit); }
+.note-info .note-icone { background: var(--cyan); color: var(--nuit); }
+.note-erreur { background: var(--rouge-pale); color: var(--rouge); }
+.note-erreur .note-icone { background: var(--rouge); color: var(--blanc); }
+
+.indice { margin-top: .9rem; }
+
+/* Panneaux de résultat */
+.resultat-ok { border: 4px solid var(--cyan); }
+.resultat-ok h3 { color: var(--vert); }
+.resultat-bloque { border: 4px solid var(--brun); }
+.resultat-bloque h3 { color: var(--brun); }
+
+/* ---------- 8. Robot ---------- */
+.attaque { list-style: none; margin: 1rem 0 0; padding: 0; }
+.ligne-attaque { border: 4px solid transparent; }
+.ligne-attaque.en-cours { border-color: var(--cyan); }
+.ligne-etat { margin: .3rem 0 0; }
+.ligne-attaque.fait .ligne-etat { color: var(--vert); font-weight: 800; }
+
+.compteur {
+  display: flex;
+  flex-direction: column;
+  margin-top: .7rem;
+  padding: .7rem 1rem;
+  border-radius: var(--rayon-case);
+  background: var(--nuit);
+  color: var(--cyan);
+  font-family: var(--police-code);
+  font-size: 1rem;
+}
+.compteur-nombre { font-size: 1.4rem; }
+
+/* ---------- 9. Bilan ---------- */
+.lecons { list-style: none; margin: 0 0 1rem; padding: 0; }
+.lecons .panneau { margin-bottom: .6rem; }
+
+.tableau-defilant { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 1rem; }
+caption { text-align: left; font-weight: 800; font-size: 1.1rem; margin-bottom: .6rem; }
+th, td { padding: .5rem .6rem; border: 2px solid #c9d3e6; text-align: left; vertical-align: top; }
+thead th { background: #e3eaf6; }
+td.temps { font-weight: 800; white-space: nowrap; }
+
+.reflexes { margin: 0; padding-left: 1.2rem; }
+.reflexes li { margin-bottom: .4rem; }
+
+/* La pastille « Code » reprend celle du PDF */
+.bloc-code { margin: 1.5rem 0; text-align: center; }
+.bloc-code-texte { font-size: 1.15rem; }
+.pastille-code {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem 1rem;
+  padding: .7rem 1rem .7rem 1.5rem;
+  border-radius: 2.2rem;
+  background: var(--cyan);
+}
+.pastille-code-titre { color: var(--nuit); font-size: 1.6rem; font-weight: 800; }
+.bulles { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
+.bulle {
+  display: grid;
+  place-items: center;
+  width: 3rem; height: 3rem;
+  border-radius: 50%;
+  border: 3px solid var(--blanc);
+  background: var(--bleu);
+  color: var(--blanc);
+  font-family: var(--police-code);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+#recommencer { display: flex; width: fit-content; margin: .5rem auto 0; }
+
+/* ---------- 10. Pied de page : le « sol » de pixels cyan ---------- */
+.pied { flex-shrink: 0; text-align: center; font-size: .95rem; }
+.pied p { margin: 0 1rem 1rem; }
+.sol-pixels {
+  height: 160px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='160'%3E%3Crect x='280' y='0' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='320' y='40' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='400' y='40' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='440' y='40' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='600' y='40' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='40' y='80' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='160' y='80' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='400' y='80' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='440' y='80' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='560' y='80' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='600' y='80' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='720' y='80' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='0' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='40' y='120' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='120' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='160' y='120' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='200' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='360' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='400' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='520' y='120' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='560' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='600' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='640' y='120' width='40' height='40' fill='%233a7fc4'/%3E%3Crect x='680' y='120' width='40' height='40' fill='%2340bfef'/%3E%3Crect x='760' y='120' width='40' height='40' fill='%2340bfef'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: center bottom;
+  background-size: auto 160px;
+}
+
+/* ---------- 10 bis. Composants du faux réseau social ---------- */
+
+/* Consigne de chaque étape */
+.consigne { border: 4px solid var(--cyan); }
+
+/* Conversation (messagerie) */
+.conversation {
+  margin: .8rem 0 0;
+  padding: .9rem 1rem;
+  border-radius: 18px;
+  background: #f1f3f8;
+  border: 2px solid #d7dce6;
+}
+.conversation-entete { display: flex; align-items: center; gap: .7rem; margin-bottom: .7rem; }
+.conversation-entete p { margin: 0; line-height: 1.3; }
+.conversation-pseudo { font-size: .95rem; color: #4a5266; }
+.bulle-message {
+  margin: 0 0 .5rem;
+  max-width: 34rem;
+  padding: .7rem 1rem;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--blanc);
+  border: 2px solid #d7dce6;
+  color: #1b1f2a;
+}
+.bulle-message:last-child { margin-bottom: 0; }
+
+/* Choix de réponse */
+.choix-liste { display: grid; gap: .6rem; margin-top: .4rem; }
+.choix {
+  width: 100%;
+  min-height: 54px;
+  padding: .6rem 1rem;
+  border: 3px solid #d7dce6;
+  border-radius: 14px;
+  background: #f7f8fb;
+  color: var(--nuit);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.choix:hover { border-color: var(--bleu); background: #eef3fb; }
+.choix.faux, .choix.faux:hover { border-color: var(--rouge); background: var(--rouge-pale); }
+.choix.faux::before { content: "✗ "; color: var(--rouge); }
+
+/* Profil de réseau social : une « appli » blanche, plus sobre que le reste */
+.reseau {
+  background: var(--blanc);
+  color: #1b1f2a;
+  border-radius: 22px;
+  padding: 1.1rem 1.2rem;
+  margin: 0 0 1rem;
+  border: 3px solid #d7dce6;
+}
+.reseau-entete { display: flex; align-items: center; gap: .9rem; margin-bottom: .7rem; }
+.reseau-entete p { margin: 0; }
+.reseau-avatar {
+  width: 4.2rem; height: 4.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--cyan);
+  flex: 0 0 auto;
+}
+.petit-avatar { width: 2.8rem; height: 2.8rem; border-width: 2px; }
+.reseau-pseudo { font-weight: 800; font-size: 1.2rem; }
+.reseau-nom { margin-top: .2rem !important; }
+.reseau-stats { margin: 0 0 .4rem; font-size: 1rem; color: #4a5266; line-height: 2.1; }
+.reseau-bio { margin: 0 0 .8rem; line-height: 2.1; }
+.reseau-depuis { font-size: .95rem; color: #4a5266; margin: 0 0 .8rem; }
+.publication-vide { margin: 0; padding-top: .8rem; border-top: 2px solid #e6e9f0; color: #4a5266; font-style: italic; }
+
+.publication { border-top: 2px solid #e6e9f0; padding-top: .9rem; margin-top: .9rem; }
+.publication-photo { display: block; width: 100%; height: auto; border-radius: 14px; margin-bottom: .6rem; }
+.publication-texte { margin: 0 0 .25rem; }
+.publication-texte strong { margin-right: .3rem; }
+.publication-date { margin: 0; font-size: .9rem; color: #4a5266; }
+
+/* Avatar « par défaut » : une lettre dans un rond coloré */
+.avatar-lettre {
+  display: grid;
+  place-items: center;
+  width: 4.2rem; height: 4.2rem;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  color: var(--blanc);
+  font-weight: 800;
+  font-size: 1.6rem;
+  border: 3px solid #d7dce6;
+}
+.avatar-lettre.petit { width: 3.2rem; height: 3.2rem; font-size: 1.25rem; }
+
+/* Indices cliquables */
+.indice-perso {
+  display: inline;
+  padding: .1rem .5rem;
+  border: 2px dashed var(--bleu);
+  border-radius: 8px;
+  background: #eef3fb;
+  color: var(--nuit);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.indice-perso:hover { background: var(--cyan-pale); }
+.indice-perso[aria-pressed="true"] { border-style: solid; border-color: var(--nuit); background: var(--cyan); }
+.indice-perso[aria-pressed="true"]::before { content: "✓ "; }
+
+/* Carnet des indices */
+.carnet h3 { margin-bottom: .2rem; }
+.carnet-liste { list-style: none; margin: .6rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.carnet-liste li {
+  padding: .3rem .8rem;
+  border-radius: 12px;
+  background: var(--bleu);
+  color: var(--blanc);
+  font-weight: 700;
+}
+.carnet-colonne { flex-direction: column; }
+.carnet-liste li.carnet-vide { padding-left: 0; background: transparent; color: #4a5266; font-weight: 400; }
+.carnet .bouton { margin-top: 1rem; }
+
+/* Barre de recherche et résultats */
+.barre-recherche {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0 0 1rem;
+  padding: .7rem 1.1rem;
+  border-radius: 999px;
+  background: var(--blanc);
+  color: var(--nuit);
+  font-weight: 700;
+}
+.resultats { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .6rem; }
+.compte-ligne {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  width: 100%;
+  padding: .8rem 1rem;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background: var(--blanc);
+  color: #1b1f2a;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.compte-ligne:hover { border-color: var(--cyan); }
+.compte-ligne .reseau-avatar { width: 3.2rem; height: 3.2rem; }
+.compte-textes { flex: 1 1 auto; min-width: 0; }
+.compte-textes span { display: block; }
+.compte-textes span.badge { display: inline-block; }
+.compte-pseudo { font-weight: 800; }
+.compte-bio { color: #4a5266; font-size: .95rem; }
+.compte-voir { flex: 0 0 auto; font-weight: 800; color: var(--bleu); }
+.compte-ligne.ecarte { background: #e9ecf3; }
+.compte-ligne.ecarte .compte-voir { color: #4a5266; }
+
+.badge {
+  display: inline-block;
+  margin-left: .4rem;
+  padding: 0 .55rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.badge-signale { background: var(--rouge); color: var(--blanc); }
+.badge-ecarte { background: #c9d3e6; color: var(--nuit); }
+
+.bouton-retour { margin: 0 0 1rem; }
+.verdict .retour { margin-top: 1rem; }
+
+/* Bulles vides du prénom : les lettres encore à trouver */
+.bulle.vide {
+  background: var(--cyan-pale);
+  color: var(--nuit);
+  border-style: dashed;
+  border-color: var(--nuit);
+}
+
+/* ---------- 10 ter. Profil complet, chasse aux indices, recherche ---------- */
+
+/* Détecteur de faux compte : reste visible pendant qu'on fouille le profil */
+.detecteur {
+  position: sticky;
+  top: .5rem;
+  z-index: 5;
+  margin: 0 0 1rem;
+  padding: .7rem 1rem .8rem;
+  border-radius: 18px;
+  background: var(--nuit);
+  color: var(--blanc);
+  box-shadow: 0 0 0 3px var(--cyan);
+}
+.detecteur-titre { margin: 0 0 .45rem; font-weight: 800; font-size: 1rem; }
+.detecteur-barre { display: grid; grid-template-columns: repeat(6, 1fr); gap: .3rem; }
+.detecteur-barre span {
+  height: .8rem;
+  border-radius: 6px;
+  background: #3a4d78;
+}
+.detecteur-barre span.plein { background: var(--rouge); box-shadow: 0 0 0 2px #ff8a80 inset; }
+.detecteur.complet { box-shadow: 0 0 0 3px #ff8a80; }
+
+/* Profil complet */
+.reseau.profil-complet { padding: 0; overflow: hidden; }
+.profil-complet > :not(.banniere):not(.profil-haut) { margin-left: 1.2rem; margin-right: 1.2rem; }
+.banniere {
+  height: 6.5rem;
+  background:
+    radial-gradient(circle at 20% 120%, rgba(64,191,239,.75) 0 18%, transparent 19%),
+    radial-gradient(circle at 75% 130%, rgba(64,191,239,.55) 0 22%, transparent 23%),
+    linear-gradient(135deg, #0e2554, #325ba6);
+}
+.profil-haut { display: flex; align-items: flex-start; gap: .9rem; margin: -2.4rem 1.2rem .6rem; }
+.grand-avatar { width: 5.4rem; height: 5.4rem; border: 4px solid var(--blanc); box-shadow: 0 0 0 3px var(--cyan); }
+.profil-identite p { margin: 0; }
+.profil-identite { padding-top: 2.7rem; min-width: 0; }
+.profil-infos, .profil-stats { margin-top: 0; margin-bottom: .5rem; display: flex; flex-wrap: wrap; gap: .4rem 1rem; align-items: center; color: #4a5266; }
+.profil-stats span { color: #1b1f2a; }
+.onglet-publications {
+  margin-top: 1rem !important;
+  padding-bottom: .4rem;
+  border-bottom: 3px solid var(--nuit);
+  font-weight: 800;
+  width: fit-content;
+}
+.profil-complet .publication:last-child { margin-bottom: 1.2rem; }
+
+/* Éléments à inspecter */
+.cliquable {
+  display: inline;
+  padding: .05rem .35rem;
+  border: 2px solid transparent;
+  border-bottom: 2px dotted var(--bleu);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: zoom-in;
+}
+.cliquable:hover { background: var(--cyan-pale); border-color: var(--cyan); }
+.cliquable.trouve { background: var(--rouge-pale); border: 2px solid var(--rouge); color: var(--rouge); cursor: default; }
+.cliquable.trouve::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  width: 1.15em; height: 1.15em;
+  margin-right: .3em;
+  border-radius: 50%;
+  background: var(--rouge);
+  color: var(--blanc);
+  font-size: .8em;
+  font-weight: 800;
+  vertical-align: .1em;
+}
+.cliquable.ecarte-piste { background: #eef1f6; border: 2px solid #c9d3e6; color: #4a5266; }
+.cliquable.ecarte-piste::after { content: " ✓"; }
+
+.stories { display: flex; gap: 1rem; list-style: none; padding: 0; margin-top: .8rem !important; }
+.story {
+  display: grid;
+  justify-items: center;
+  gap: .25rem;
+  padding: .2rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #1b1f2a;
+  font: inherit;
+  font-size: .9rem;
+  cursor: zoom-in;
+}
+.story-rond {
+  display: grid;
+  place-items: center;
+  width: 3.2rem; height: 3.2rem;
+  border-radius: 50%;
+  border: 3px solid var(--cyan);
+  background: #eef3fb;
+  color: var(--nuit);
+  font-size: 1.3rem;
+}
+.story:hover .story-rond { background: var(--cyan-pale); }
+.story.ecarte-piste .story-rond { border-color: #c9d3e6; color: #4a5266; }
+
+.cliquable-image {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 4px solid transparent;
+  border-radius: 18px;
+  background: transparent;
+  cursor: zoom-in;
+}
+.cliquable-image:hover { border-color: var(--cyan); }
+.cliquable-image .publication-photo { margin: 0; }
+.cliquable-image.trouve { border-color: var(--rouge); cursor: default; position: relative; }
+.cliquable-image.trouve::after {
+  content: "Photo volée !";
+  position: absolute;
+  top: .6rem; left: .6rem;
+  padding: .15rem .6rem;
+  border-radius: 999px;
+  background: var(--rouge);
+  color: var(--blanc);
+  font-weight: 800;
+}
+.cliquable-image[data-indice="concours"].trouve::after { content: "Arnaque !"; }
+
+.carte-concours {
+  display: grid;
+  place-items: center;
+  gap: .2rem;
+  min-height: 11rem;
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.08) 0 14px, transparent 14px 28px),
+    linear-gradient(135deg, #ff7a00, #e0115f);
+  color: var(--blanc);
+  text-align: center;
+}
+.carte-concours-titre { font-size: 2.2rem; font-weight: 900; letter-spacing: .04em; }
+.carte-concours-texte { font-size: 1.3rem; font-weight: 800; }
+
+.publication-date .cliquable { font-size: inherit; }
+.commentaires { list-style: none; margin: .6rem 0 0; padding: .6rem .8rem; border-radius: 12px; background: #f1f3f8; }
+.commentaires li { margin-bottom: .3rem; }
+.commentaires li:last-child { margin-bottom: 0; }
+.commentaires strong { margin-right: .3rem; }
+
+/* Barre de recherche qui filtre */
+.barre-recherche input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--nuit);
+  font: inherit;
+  font-weight: 700;
+}
+.barre-recherche input:focus-visible { outline: none; box-shadow: none; }
+.barre-recherche:focus-within { box-shadow: 0 0 0 3px var(--nuit), 0 0 0 6px var(--blanc); }
+.compte-resultats { margin: -.4rem 0 .8rem; font-weight: 700; }
+.resultats-vide { padding: 1rem; border-radius: 18px; background: var(--blanc); color: var(--nuit); }
+
+/* ---------- 11. Petits écrans ---------- */
+@media (max-width: 420px) {
+  .circuit { gap: .35rem; }
+  .circuit li { padding: .4rem .2rem .45rem; border-radius: 12px; }
+  .tuile-nom { font-size: .8rem; }
+  .panneau { padding: 1.1rem 1.1rem; border-radius: 22px; }
+  .bulles { gap: .25rem; }
+  .bulle { width: 2.3rem; height: 2.3rem; font-size: 1.15rem; border-width: 2px; }
+  .reseau { padding: 1rem; }
+  .compte-ligne { padding: .7rem .8rem; gap: .7rem; }
+  .profil-complet > :not(.banniere):not(.profil-haut) { margin-left: 1rem; margin-right: 1rem; }
+  .profil-haut { margin-left: 1rem; margin-right: 1rem; }
+  .grand-avatar { width: 4.6rem; height: 4.6rem; }
+  .stories { gap: .6rem; }
+  .pastille-code { padding: .7rem 1rem; }
+}
